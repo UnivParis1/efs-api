@@ -27,7 +27,7 @@ app.use(express.static(path.join(__dirname, '../../efs-gui', "build")));
 
 app.use('/search', searchRouter);
 
-app.get("/gui", (req, res) => {
+app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, '../../efs-gui', "build", "index.html"));
 });
 
