@@ -6,7 +6,7 @@ const router = express.Router();
 
 /* GET home page. */
 router.post('/', async (req, res) => {
-  const result = await searchService.fetchExperts(req.body.sentence, req.body.precision);
+  const result = await searchService.fetchExperts(req.body.sentence, req.body.precision, req.body.model);
   res.json(result);
 });
 
