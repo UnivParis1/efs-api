@@ -18,7 +18,7 @@ const searchRouter = require('./routes/search');
 
 const app = express();
 
-app.use(cors({ credentials: true, origin: process.env.CLIENT_URL }))
+app.use(cors({ credentials: true, origin: JSON.parse(process.env.CLIENT_URL) }))
 
 app.set('views', path.join(__dirname, '../views'));
 app.set('view engine', 'jade');
