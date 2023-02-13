@@ -14,13 +14,14 @@ const svgCaptcha = require('svg-captcha');
 import {rateLimiter} from './middlewares';
 
 
-const searchRouter = require('./routes/search');
+import assetsResolverRouter, {CSS, JS} from "./routes/assetsResolver";
 
+const searchRouter = require('./routes/search');
 const app = express();
 
 const allowedUrl: string = process.env.CLIENT_URL ?? "[]";
 
-app.use(cors({ credentials: true, origin: JSON.parse(allowedUrl) }))
+app.use(cors({credentials: true, origin: JSON.parse(allowedUrl)}))
 
 app.set('views', path.join(__dirname, '../views'));
 app.set('view engine', 'jade');
@@ -36,10 +37,24 @@ app.use(session({
     saveUninitialized: true,
     cookie: {secure: process.env.SECURE_COOKIE}
 }))
-app.use(express.static(path.join(__dirname, '../../efs-gui', "build")));
+const assetsPath = path.join(__dirname, '../../efs-gui', "build");
+app.use(express.static(assetsPath));
 
 app.use('/search', rateLimiter);
 app.use('/search', searchRouter);
+app.use('/main.js', function (req, res, next) {
+    req.requested_file = "js/main*.js";
+    req.assets_path = assetsPath;
+    req.requested_file_type = JS;
+    next();
+}, assetsResolverRouter);
+app.use('/main.css', function (req, res, next) {
+    req.requested_file = "css/main*.css";
+    req.assets_path = assetsPath;
+    req.requested_file_type = CSS;
+    next();
+}, assetsResolverRouter);
+
 
 app.get('/captcha', function (req, res) {
     const captcha = svgCaptcha.create({noise: 1, width: 50, height: 20, fontSize: 14});
