@@ -37,7 +37,7 @@ app.use(session({
     saveUninitialized: true,
     cookie: {secure: process.env.SECURE_COOKIE}
 }))
-const assetsPath = path.join(__dirname, '../../efs-gui', "build");
+const assetsPath = path.join(__dirname, '../../efs-gui', "build-stable");
 app.use(express.static(assetsPath));
 
 app.use('/search', rateLimiter);
@@ -64,7 +64,7 @@ app.get('/captcha', function (req, res) {
 });
 
 app.get("/", (req, res) => {
-    res.sendFile(path.join(__dirname, '../../efs-gui', "build", "index.html"));
+    res.sendFile(`${assetsPath}/index.html`);
 });
 
 // catch 404 and forward to error handler
