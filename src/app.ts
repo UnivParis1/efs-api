@@ -35,7 +35,7 @@ app.use(session({
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: true,
-    cookie: {secure: process.env.SECURE_COOKIE}
+    cookie: {secure: process.env.SECURE_COOKIE, sameSite: 'none', maxAge: 24*60*60*10, path: '/' }
 }))
 const assetsPath = path.join(__dirname, '../../efs-gui', "build-stable");
 app.use(express.static(assetsPath));
