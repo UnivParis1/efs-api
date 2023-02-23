@@ -2,18 +2,32 @@ import {createClient} from "celery-node";
 import Task from "celery-node/dist/app/task";
 
 const MAX_SENTENCE_LENGTH = 400;
+const TASKS_BY_MODEL = {
+    sbert: "local_model_tasks.find_expert_with_sbert",
+    ada: "remote_model_tasks.find_expert_with_ada",
+}
+const QUEUES_BY_MODEL = {
+    sbert: "qcpu",
+    ada: "qio",
+}
 const searchService = {
-    celery_client: () => createClient(
+
+    celery_client: (queue_name: string) => createClient(
         process.env.CELERY_BROKER,
         process.env.CELERY_BACKEND,
+        queue_name
     ),
-    fetchExperts: async (sentence: String, precision: Number, model: String) => {
+    fetchExperts: async (sentence: string, precision: Number, model: string) => {
+        if (!Object.keys(TASKS_BY_MODEL).includes(model)) {
+            throw `Model ${model} not registered, abort !`
+        }
         let cleanSentence = sentence.substring(0, MAX_SENTENCE_LENGTH).trim().replace(/\s\s+/g, ' ');
-        const celery_client = searchService.celery_client();
-        const task: Task = celery_client.createTask("tasks.find_experts");
-        const result = task.applyAsync([cleanSentence, precision, model]);
+        const celeryClient = searchService.celery_client(QUEUES_BY_MODEL[model]);
+        console.log(`Task called : ${TASKS_BY_MODEL[model]}`)
+        const task: Task = celeryClient.createTask(TASKS_BY_MODEL[model]);
+        const result = task.applyAsync([cleanSentence, precision]);
         const data = await result.get();
-        await celery_client.disconnect();
+        await celeryClient.disconnect();
         return data;
     },
 };
