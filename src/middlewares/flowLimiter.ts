@@ -24,6 +24,6 @@ export const flowLimiter = async (req: Request, res: Response, next: NextFunctio
 };
 
 export const registerSlowRequest = async (model: string, time: number): Promise<void> => {
-    if (time > BOLT_THRESHOLD_MS) return
+    if (time < BOLT_THRESHOLD_MS) return
     connectToRedis().then((client) => client.set(boltName(model), 1, {'EX': BOLT_TTL_S}))
 }
