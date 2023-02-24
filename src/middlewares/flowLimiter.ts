@@ -4,7 +4,9 @@ import {createClient} from "redis";
 const BOLT_NAME_PREFIX = "bolt";
 const BOLT_THRESHOLD_MS = 5000;
 const BOLT_TTL_S_MIN = 5;
+const BOLT_TTL_S_MAX = 30;
 const BOLT_TTL_S_INC = 1;
+const BOLT_TTL_S_DEC = 5;
 const BOLT_TTL_TTL = 1000;
 
 async function connectToRedis() {
@@ -36,7 +38,7 @@ export const registerSlowRequest = async (model: string, time: number): Promise<
                 const intTTL = parseInt(TTL);
                 if (intTTL <= BOLT_TTL_S_MIN) return;
                 // decrease penalty TTL
-                client.set(boltTtlName(model), intTTL - BOLT_TTL_S_INC, {'EX': BOLT_TTL_TTL});
+                client.set(boltTtlName(model), intTTL - BOLT_TTL_S_DEC, {'EX': BOLT_TTL_TTL});
             })
         })
     } else {
@@ -50,7 +52,7 @@ export const registerSlowRequest = async (model: string, time: number): Promise<
                 //set the penalty flag with current ttl
                 client.set(boltFlagName(model), 1, {'EX': intTTL});
                 // increase penalty TTL
-                intTTL += BOLT_TTL_S_INC;
+                intTTL = Math.min(BOLT_TTL_S_MAX, intTTL + BOLT_TTL_S_INC);
                 client.set(boltTtlName(model), intTTL, {'EX': BOLT_TTL_TTL});
             })
 
