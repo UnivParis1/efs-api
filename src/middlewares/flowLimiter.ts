@@ -24,6 +24,7 @@ const boltTtlName = (model) => `${BOLT_NAME_PREFIX}-${model}-ttl`
 export const flowLimiter = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const client = await connectToRedis();
     const bolt = await client.get(boltFlagName(req.body.model));
+    await client.disconnect();
     if (bolt === null) next()
     else res.status(503).send('Server under heavy load')
 };
