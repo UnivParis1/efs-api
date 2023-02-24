@@ -1,3 +1,7 @@
+import responseTime from "response-time";
+import {flowLimiter, rateLimiter, registerSlowRequest} from './middlewares';
+import assetsResolverRouter, {CSS, JS} from "./routes/assetsResolver";
+
 const createError = require('http-errors');
 
 const express = require('express');
@@ -11,10 +15,6 @@ const session = require('express-session')
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const svgCaptcha = require('svg-captcha');
-import {rateLimiter} from './middlewares';
-
-
-import assetsResolverRouter, {CSS, JS} from "./routes/assetsResolver";
 
 const searchRouter = require('./routes/search');
 const app = express();
@@ -35,12 +35,14 @@ app.use(session({
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: true,
-    cookie: {secure: process.env.SECURE_COOKIE, sameSite: 'none', maxAge: 24*60*60*10, path: '/' }
+    cookie: {secure: process.env.SECURE_COOKIE, sameSite: 'none', maxAge: 24 * 60 * 60 * 10, path: '/'}
 }))
 const assetsPath = path.join(__dirname, '../../efs-gui', "build-stable");
 app.use(express.static(assetsPath));
 
 app.use('/search', rateLimiter);
+app.use('/search', flowLimiter);
+app.use('/search', responseTime((req, res, time) => registerSlowRequest(req.body.model, time)))
 app.use('/search', searchRouter);
 app.use('/main.js', function (req, res, next) {
     req.requested_file = "js/main*.js";
