@@ -33,12 +33,23 @@ export const registerSlowRequest = async (model: string, time: number): Promise<
         //request is fast
         connectToRedis().then(async (client) => {
             //read current penalty TTL
-            client.get(boltTtlName(model)).then((TTL) => {
-                if (TTL === null) return;
+            client.get(boltTtlName(model)).then(async (TTL) => {
+                if (TTL === null) {
+                    await client.disconnect();
+                    console.log("client disconnected");
+                    return;
+                }
                 const intTTL = parseInt(TTL);
-                if (intTTL <= BOLT_TTL_S_MIN) return;
+                if (intTTL <= BOLT_TTL_S_MIN) {
+                    await client.disconnect();
+                    console.log("client disconnected");
+                    return;
+                }
                 // decrease penalty TTL
-                client.set(boltTtlName(model), intTTL - BOLT_TTL_S_DEC, {'EX': BOLT_TTL_TTL});
+                client.set(boltTtlName(model), intTTL - BOLT_TTL_S_DEC, {'EX': BOLT_TTL_TTL}).finally(async () => {
+                    await client.disconnect();
+                    console.log("client disconnected");
+                });
             })
         })
     } else {
@@ -53,7 +64,10 @@ export const registerSlowRequest = async (model: string, time: number): Promise<
                 client.set(boltFlagName(model), 1, {'EX': intTTL});
                 // increase penalty TTL
                 intTTL = Math.min(BOLT_TTL_S_MAX, intTTL + BOLT_TTL_S_INC);
-                client.set(boltTtlName(model), intTTL, {'EX': BOLT_TTL_TTL});
+                client.set(boltTtlName(model), intTTL, {'EX': BOLT_TTL_TTL}).finally(async () => {
+                    await client.disconnect();
+                    console.log("client disconnected");
+                });
             })
 
         })
