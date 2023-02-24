@@ -42,7 +42,9 @@ app.use(express.static(assetsPath));
 
 app.use('/search', rateLimiter);
 app.use('/search', flowLimiter);
-app.use('/search', responseTime((req, res, time) => registerSlowRequest(req.body.model, time)))
+app.use('/search', responseTime((req, res, time) => {
+    if (res.statusCode === 200) registerSlowRequest(req.body.model, time)
+}))
 app.use('/search', searchRouter);
 app.use('/main.js', function (req, res, next) {
     req.requested_file = "js/main*.js";
