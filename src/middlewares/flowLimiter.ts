@@ -36,19 +36,16 @@ export const registerSlowRequest = async (model: string, time: number): Promise<
             client.get(boltTtlName(model)).then(async (TTL) => {
                 if (TTL === null) {
                     await client.disconnect();
-                    console.log("client disconnected");
                     return;
                 }
                 const intTTL = parseInt(TTL);
                 if (intTTL <= BOLT_TTL_S_MIN) {
                     await client.disconnect();
-                    console.log("client disconnected");
                     return;
                 }
                 // decrease penalty TTL
                 client.set(boltTtlName(model), intTTL - BOLT_TTL_S_DEC, {'EX': BOLT_TTL_TTL}).finally(async () => {
                     await client.disconnect();
-                    console.log("client disconnected");
                 });
             })
         })
@@ -66,7 +63,6 @@ export const registerSlowRequest = async (model: string, time: number): Promise<
                 intTTL = Math.min(BOLT_TTL_S_MAX, intTTL + BOLT_TTL_S_INC);
                 client.set(boltTtlName(model), intTTL, {'EX': BOLT_TTL_TTL}).finally(async () => {
                     await client.disconnect();
-                    console.log("client disconnected");
                 });
             })
 
