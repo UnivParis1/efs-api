@@ -65,9 +65,9 @@ Le présent repository efs-api héberge le code source de l'API de l'EFS (Node/T
   est régulé par un [rate limiter](src/middlewares/rateLimiter.ts) dont les paramètres sont codés en dur (20 requêtes
   maximum dans
   une fenêtre de 3 minutes)
-* Un second mécanisme, appelé [flowLimiter](src/middlewares/flowLimiter.ts) régule le trafic de façon dynamique en
+* Un second mécanisme, appelé [flow limiter](src/middlewares/flowLimiter.ts) régule le trafic de façon dynamique en
   bloquant les requêtes lorsque les temps de traitement dépassent 5 secondes. La durée de vie du verrou est ensuite
-  incrémentée/décrémentée en fonction de l'évolution des temps de réponse.L'état bloqué/débloqué est persisté par un
-  verrou redis assorti d'une durée de vie.
+  incrémentée/décrémentée en fonction de l'évolution des temps de réponse. L'état bloqué/débloqué est persisté par un
+  flag Redis assorti d'une durée de vie.
   Cela permet d'obtenir une réponse élégante à l'utilisateur (HTTP 503, 'Server under heavy load') plutôt qu'une requête
   qui ne revient jamais.
