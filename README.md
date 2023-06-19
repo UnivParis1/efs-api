@@ -9,15 +9,9 @@ une requête utilisateur en langage naturel sur la base de leurs publications.
 L'EFS est alimenté quotidiennement par les données de la plateforme HAL
 institutionnelle. Il utilise les modèles de langage S-BERT (paraphrase-multilingual-mpnet-base-v2) et GPT-3 (ADA) de
 l'API OpenAI pour calculer les similarités entre la requête utilisateur et les métadonnées des publications.
-L'EFS est alimenté quotidiennement par les données de la plateforme HAL
-institutionnelle. Il utilise les modèles de langage S-BERT (paraphrase-multilingual-mpnet-base-v2) et GPT-3 (ADA) de
-l'API OpenAI pour calculer les similarités entre la requête utilisateur et les métadonnées des publications.
-L'EFS est alimenté quotidiennement par les données de la plateforme HAL
-institutionnelle. Il utilise les modèles de langage S-BERT (paraphrase-multilingual-mpnet-base-v2) et GPT-3 (ADA) de
-l'API OpenAI pour calculer les similarités entre la requête utilisateur et les métadonnées des publications.
 
 L'interface utilisateur en React est intégrée comme un widget sur le site institutionnel de l'Université Paris 1
-Panthéon-Sorbonne : https://www.pantheonsorbonne.fr/recherche/outil-de-recherche-dexpertise/
+Panthéon-Sorbonne : https://recherche.pantheonsorbonne.fr/structures-recherche/rechercher-expertise
 
 Pour plus d'informations,
 voir [cet article de l'observatoire de l'intelligence artificielle de Paris 1](https://observatoire-ia.pantheonsorbonne.fr/actualite/outil-recherche-dexpertise-base-lintelligence-artificielle-luniversite-paris-1-pantheon).
