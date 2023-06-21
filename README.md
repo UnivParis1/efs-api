@@ -27,6 +27,7 @@ La présente application comporte d'importantes limitations :
 
 - limitations fonctionnelles : la recherche d'experts s'effectue exclusivement à partir de métadonnées texte
   vectorisées (
+- limitations fonctionnelles : la recherche d'experts s'effectue exclusivement à partir de métadonnées vectorisées (
   recherche sémantique), à l'exclusion de toute recherche par mots-clés, ce qui rend difficile pour les chercheurs et
   les chercheuses le contrôle de leurs modalités d'exposition.
 - limitations techniques : le code n'est pas sous _linting_ ni sous tests unitaires et la documentation est limitée
@@ -52,7 +53,7 @@ L'EFS est une application 3 tiers :
 
 #### Licence
 
-Le code source de l'EFS est publié sous licence CECILL v2.1. Voir le fichier [LICENSE](LICENSE) pour plus de détails.
+Le code source de l'EFS est publié sous licence CECILL v2.1. Voir le fichier [LICENSE](LICENCE.md) pour plus de détails.
 
 #### Déploiement de l'API
 
