@@ -65,7 +65,7 @@ Le présent repository efs-api héberge le code source de l'API de l'EFS (Node/T
 * Le trafic vers l'API
   est régulé par un [rate limiter](src/middlewares/rateLimiter.ts) dont les paramètres sont codés en dur (20 requêtes
   maximum dans une fenêtre de 3 minutes). Ce dispostif a pour but de protéger l'API contre le risque de spam (
-  débit du compte OpenAI ou déni de service).
+  débit du compte OpenAI ou déni de service). Pour les requêtes vers OpenAI, une Captcha vient compléter le dispositif.
 * Un second mécanisme, appelé [flow limiter](src/middlewares/flowLimiter.ts) régule le trafic de façon dynamique en
   bloquant les requêtes lorsque les temps de traitement dépassent 5 secondes. La durée de vie du verrou est ensuite
   incrémentée/décrémentée en fonction de l'évolution des temps de réponse. L'état bloqué/débloqué est persisté par un
